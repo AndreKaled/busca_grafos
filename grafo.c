@@ -1,9 +1,9 @@
 #include "grafo.h"
 #include <stdlib.h>
 
-link novoNo(int vertices, link prox){
-    link a = mallloc(sizeof(struct No));
-    a->vertices = vertices;
+link novoNo(int destino, link prox){
+    link a = malloc(sizeof(struct No));
+    a->destino = destino;
     a->prox = prox;
     return a;
 }
@@ -21,7 +21,7 @@ Grafo initGrafo(int vertices){
 
 void insereArcoNoGrafo(Grafo g, int v, int w){
     for(link a = g->conexoes[v]; a != NULL; a = a->prox)
-        if(a->vertices = w) return;
+        if(a->destino == w) return;
     g->conexoes[v] = novoNo(w, g->conexoes[v]);
     g->arcos++;
 }

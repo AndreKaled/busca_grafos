@@ -5,6 +5,13 @@
  * Base: https://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/graphdatastructs.html 
  * */
 
+typedef struct No *link;
+
+typedef struct No{
+    int destino; // pelo que entendi, isso pode ser trocado para TipoDado depois
+    link prox;
+}No;
+
 typedef struct grafo{
     int vertices;
     int arcos;
@@ -12,13 +19,6 @@ typedef struct grafo{
 }grafo;
 
 typedef struct grafo *Grafo;
-
-typedef struct No *link;
-
-typedef struct No{
-    int vertices;
-    link prox;
-}No;
 
 /* Recebe um vertice e o endereço próx do no, retorna o novo no que aponta 
 para o prox passado no argumento (no.dado e no->prox->prox...)*/
