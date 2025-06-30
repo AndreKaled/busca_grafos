@@ -19,9 +19,18 @@ Grafo initGrafo(int vertices){
     return g;
 }
 
-void insereArcoNoGrafo(Grafo g, int v, int w){
+void insereArcoNoGrafo(Grafo g, int v, int w, char direcionado){
     for(link a = g->conexoes[v]; a != NULL; a = a->prox)
         if(a->destino == w) return;
     g->conexoes[v] = novoNo(w, g->conexoes[v]);
+    if(direcionado)
+        g->conexoes[w] = novoNo(v, g->conexoes[w]);
     g->arcos++;
+}
+
+void bfs(Grafo g, int raiz){
+    int cont = 0;
+    for(int v = 0; v < g->vertices; v++)
+       num[v] = -1;
+    
 }
