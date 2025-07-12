@@ -150,3 +150,72 @@ void destruirGrafo(Grafo g) {
     free(g->visitado);
     free(g);  
 }
+
+void encontrarCaminhosAux(Grafo g, int u, int *caminhoAtual, int nivel, int *visitadoNoCaminho, int *numCaminhos){
+    caminhoAtual[nivel] = u;
+    visitadoNoCaminho[u] = 1;
+    if(nivel == g->vertices -1){
+        int todosVisitados = 1;
+        for(int i = 0; i < g->vertices; i++){
+            if(visitadoNoCaminho[i] == 0){
+                todosVisitados = 0;
+                break;
+            }
+        }
+        if(todosVisitados){
+            (*numCaminhos)++;
+            printf("Caminho %d: ", *numCaminhos);
+            for(int i = 0; i <= nivel; i++){
+                printf("%d%s", caminhoAtual[i], (i == nivel) ? "" : " -> ");
+            }
+            printf("\n");
+        }
+    } else {
+        link adj = g->conexoes[u];
+        while(adj != NULL){
+            int v = adj->destino;
+            if(visitadoNoCaminho[v] == 0)
+                encontrarCaminhosAux(g,v,caminhoAtual,nivel+1,visitadoNoCaminho, numCaminhos);
+            adj = adj->prox;
+        }
+    }
+
+    //marca como nao visitado para backtracking
+    visitadoNoCaminho[u] = 0;
+}
+
+void encontrarTodosCaminhos(Grafo g, int verticeInicial){
+    if(g == NULL || verticeInicial < 0 || verticeInicial >=g->vertices){
+        printf("ERRO DE GRAFO NULO OU VERTICE FORA DOS LIMITES!\n");
+        exit(1);
+    }
+    if(g->vertices == 0){
+        printf("Nenhum caminho possível de um grafo vazio\n");
+        return;
+    }
+    if(g->vertices == 1){
+        printf("Caminho 1: %d\n", verticeInicial);
+        return;
+    }
+    int *caminhoAtual = (int *) malloc(g->vertices * sizeof(int));
+    if(caminhoAtual == NULL){
+        printf("FALHA AO ALOCAR MEMORIA PARA {caminhoAtual}\n");
+        exit(1);
+    }
+
+    //calloc aparentemente aloca e inicia com 0
+    int *visitados = (int *) calloc(g->vertices, sizeof(int));
+    if(visitados == NULL){
+        printf("FALHA AO ALOCAR MEMORIA PARA {visitados}\n");
+        exit(1);
+    }
+
+    int numCaminhos = 0;
+    printf("encontrando todos os caminhos com inicio em %d que visita todos os vertices do grafo:\n", verticeInicial);
+    encontrarCaminhosAux(g, verticeInicial, caminhoAtual, 0, visitados, &numCaminhos);
+    if (numCaminhos == 0)
+        printf("Nenhum caminho encontrado para visitar todos os vertices :(\n");
+    
+    free(caminhoAtual);
+    free(visitados);
+}

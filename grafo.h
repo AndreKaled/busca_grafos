@@ -41,4 +41,5 @@ void dfs(Grafo g, int verticeInicial);
 
 void destruirGrafo(Grafo g);
 
+void encontrarTodosCaminhos(Grafo g, int verticeInicial);
 #endif

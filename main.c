@@ -13,7 +13,7 @@ void imprimeGrafo(Grafo g) {
 
 int main() {
     Grafo g = inicializarGrafo(8); // cria grafo com 5 vértices (0 a 4)
-    char dir = 1;
+    char dir = 0;
     // inserindo arcos
     insereArcoNoGrafo(g, 0, 1, dir);
     insereArcoNoGrafo(g, 0, 2, dir);
@@ -22,13 +22,18 @@ int main() {
     insereArcoNoGrafo(g, 3, 6, dir);
     insereArcoNoGrafo(g, 2, 5, dir);
     insereArcoNoGrafo(g, 5, 7, dir);
-
+    //add pra testar os caminhos
+    insereArcoNoGrafo(g, 4, 6, dir);
+    insereArcoNoGrafo(g, 7, 1, dir);
+    insereArcoNoGrafo(g, 2, 6, dir);
+    
     // tentando inserir arco já existente (não deve duplicar)
     insereArcoNoGrafo(g, 0, 1, dir);
 
     // imprime a lista de adjacência
     imprimeGrafo(g);
     dfs(g, 0);
+    encontrarTodosCaminhos(g, 4);
     destruirGrafo(g);
     return 0;
 }
