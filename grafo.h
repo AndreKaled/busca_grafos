@@ -42,4 +42,10 @@ void dfs(Grafo g, int verticeInicial);
 void destruirGrafo(Grafo g);
 
 void encontrarTodosCaminhos(Grafo g, int verticeInicial);
+
+char grafoConexo(Grafo g);
+
+Grafo gerarGrafoAleatorio(int numVertices, float grau_conectividade, char direcionado);
+
+void imprimeGrafo(Grafo g);
 #endif

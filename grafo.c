@@ -1,5 +1,6 @@
 #include "grafo.h"
 #include <stdlib.h>
+#include <time.h>
 
 link novoNo(int destino, link prox){
     link a = malloc(sizeof(struct No));
@@ -112,14 +113,15 @@ void inicializarVisitados(Grafo g){
     }
 }
 
-void dfsVisita(Grafo g, int v){
+void dfsVisita(Grafo g, int v, char imprimir){
     g->visitado[v] = 1;
-    printf("%d ",v);
+    if(imprimir)
+        printf("%d ",v);
     link vizinhos;
     for(vizinhos = g->conexoes[v]; vizinhos; vizinhos = vizinhos->prox){
         int w = vizinhos->destino; //w é vizinho de v
         if(g->visitado[w] == 0)
-            dfsVisita(g, w);
+            dfsVisita(g, w, imprimir);
     }
 }
 
@@ -130,7 +132,7 @@ void dfs(Grafo g, int verticeInicial){
     }
     inicializarVisitados(g);
     printf("DFS: ");
-    dfsVisita(g, verticeInicial);
+    dfsVisita(g, verticeInicial, 1);
     printf("\n");
 }
 
@@ -218,4 +220,86 @@ void encontrarTodosCaminhos(Grafo g, int verticeInicial){
     
     free(caminhoAtual);
     free(visitados);
+}
+
+char grafoConexo(Grafo g){
+    if(g == NULL){
+        printf("ERRO: O GRAFO E NULO\n");
+        return 0;
+    }
+    if(g->vertices==0)
+        return 1;
+
+    inicializarVisitados(g);
+
+    dfsVisita(g, 0, 0);
+    int contaVisitados = 0;
+    for(int i = 0; i < g->vertices; i++){
+        if(g->visitado[i] == 1)
+            contaVisitados++;
+    }
+    return (contaVisitados == g->vertices);
+}
+
+Grafo gerarGrafoAleatorio(int numVertices, float grau_conectividade, char direcionado){
+    if(numVertices <= 0){
+        printf("ERRO: numero e vertices deve ser positivo\n");
+        exit(1);
+    }
+    if(grau_conectividade < 0.0 || grau_conectividade > 1.0){
+        printf("ERRO: grau nao pode passar do intervalo (0, 1)");
+        exit(1);
+    }
+    Grafo g = inicializarGrafo(numVertices);
+    srand(time(NULL));
+    if(g == NULL)
+        return NULL;
+    
+        for(int i=0; i < numVertices; i++){
+            for(int j = (direcionado? 0 : i+1); j < numVertices; j++){
+                double prob = (double)rand() / RAND_MAX;
+                if(prob<grau_conectividade)
+                    insereArcoNoGrafo(g,i,j, direcionado);
+            }
+        }
+
+        if(!direcionado && numVertices > 1){
+            int tentativas = 0;
+            int MAX_TENTATIVAS = numVertices*numVertices*2;
+            while(!grafoConexo(g) && tentativas < MAX_TENTATIVAS){
+                int u = rand() % numVertices;
+                int v = rand() % numVertices;
+                if(u==v) 
+                    continue;
+
+                char arestaExite = 0;
+                for(link a = g->conexoes[u]; a != NULL; a = a->prox){
+                    if(a->destino == v){
+                        arestaExite = 1;
+                        break;
+                    }
+                }
+                if(arestaExite) 
+                    continue; // tenta outro
+                
+                insereArcoNoGrafo(g,u,v,direcionado);
+                tentativas++;
+            }
+
+            if(!grafoConexo(g)){
+                printf("Nao foi possivel garantir grafo conexo, tente novamente...\n");
+                return NULL;
+            }
+        }
+    return g;
+}
+
+void imprimeGrafo(Grafo g) {
+    for (int v = 0; v < g->vertices; v++) {
+        printf("Vertice %d:", v);
+        for (link a = g->conexoes[v]; a != NULL; a = a->prox) {
+            printf(" %d", a->destino);
+        }
+        printf("\n");
+    }
 }
