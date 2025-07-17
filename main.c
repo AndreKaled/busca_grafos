@@ -11,10 +11,13 @@
 */
 #define NOME_ARQUIVO_RELATORIO "relatorio_trabalho4.txt"
 
-// --- 1. Configuracao para o grafo de demonstracao ---
+// 1. Configuracao para o grafo de demonstracao geral (Questoes 1, 2, 3, 5)
 #define V_PEQUENO 5
 
-// --- 2. Configuracao para a analise de desempenho ---
+// 2. Configuracao Questao 4 (Todos os Caminhos) 
+#define V_CAMINHOS_HAMILTONIANOS 4
+
+// 3. Configuracao para a analise de desempenho
 #define V_ANALISE 500
 #define NUM_EXECUCOES 10
 const double CONECTIVIDADES[] = {0.10, 0.25, 0.50, 0.75, 1.00};
@@ -52,8 +55,8 @@ Grafo* geraGrafoConexo(int num_vertices, double conectividade) {
 }
 
 /* Orquestra a execução da demonstração com grafos pequenos. */
-
 void executaDemonstracao(FILE* stream) {
+    // Grafo para demonstrações gerais (BFS, DFS, Ciclo) usa V_PEQUENO
     Grafo *g_pequeno = criaGrafo(V_PEQUENO);
     insereArestaGrafoNaoDirecionado(g_pequeno, 0, 1);
     insereArestaGrafoNaoDirecionado(g_pequeno, 1, 2);
@@ -61,13 +64,16 @@ void executaDemonstracao(FILE* stream) {
     insereArestaGrafoNaoDirecionado(g_pequeno, 3, 0);
     if (V_PEQUENO > 4) insereArestaGrafoNaoDirecionado(g_pequeno, 1, 4);
 
-    Grafo *g_hamiltoniano = criaGrafo(V_PEQUENO);
+    // Grafo para a Questão 4 (Todos os Caminhos) usa a onstante V_CAMINHOS_HAMILTONIANOS
+    Grafo *g_hamiltoniano = criaGrafo(V_CAMINHOS_HAMILTONIANOS);
     insereArestaGrafoNaoDirecionado(g_hamiltoniano, 0, 1);
     insereArestaGrafoNaoDirecionado(g_hamiltoniano, 1, 2);
     insereArestaGrafoNaoDirecionado(g_hamiltoniano, 2, 3);
-    if (V_PEQUENO > 4) insereArestaGrafoNaoDirecionado(g_hamiltoniano, 3, 4);
-    if (V_PEQUENO > 4) insereArestaGrafoNaoDirecionado(g_hamiltoniano, 4, 0);
+    // Adicionar mais arestas para criar múltiplos caminhos
+    insereArestaGrafoNaoDirecionado(g_hamiltoniano, 3, 0); 
+    insereArestaGrafoNaoDirecionado(g_hamiltoniano, 1, 3);
     
+    // Passa os dois grafos para o relatório
     escreveSecaoDemonstracao(stream, g_pequeno, g_hamiltoniano);
 
     liberaGrafo(g_pequeno);
@@ -134,7 +140,7 @@ int main() {
     executaAnaliseDesempenho(arquivo_relatorio);
     escreveSecaoDiscussao(arquivo_relatorio);
 
-    // 3. Finalizar relatório
+    // 3. Finalizar Relatório
     finalizaRelatorio(arquivo_relatorio);
     
     printf("Relatorio '%s' gerado com sucesso!\n", NOME_ARQUIVO_RELATORIO);
