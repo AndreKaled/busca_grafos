@@ -1,51 +1,45 @@
 #ifndef GRAFO_H
 #define GRAFO_H
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-/** 
- * Base: https://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/graphdatastructs.html 
- * */
+/* Defines e Structs */
 
-typedef struct No *link;
+typedef int Vertice;
 
-typedef struct No{
-    int destino; // pelo que entendi, isso pode ser trocado para TipoDado depois
-    link prox;
-}No;
+typedef struct No {
+    Vertice vertice_adjacente;
+    struct No *proximo;
+} No;
 
-typedef struct grafo{
-    int vertices;
-    int arcos;
-    link *conexoes;
-    link *ultimosNos;
-    int *visitado;
-}grafo;
+typedef struct {
+    int num_vertices;
+    int num_arestas;
+    No **lista_adj;
+} Grafo;
 
-typedef struct grafo *Grafo;
+/* Operações do Grafo */
 
-static int num[1000];
+Grafo* criaGrafo(int num_vertices);
+void insereArcoGrafo(Grafo *g, Vertice v, Vertice w);
+void insereArestaGrafoNaoDirecionado(Grafo *g, Vertice v, Vertice w);
+void liberaGrafo(Grafo *g);
+// A função agora recebe um stream para onde escrever (ex: stdout ou um ficheiro)
+void mostraGrafo(Grafo *g, FILE* stream);
 
-/* Recebe um vertice e o endereço próx do no, retorna o novo no que aponta 
-para o prox passado no argumento (no.dado e no->prox->prox...)*/
-link novoNo(int vertices, link prox);
 
-Grafo inicializarGrafo(int vertices);
+/* Algoritmos de Busca */
 
-/* g é o grafo, v é a posição do vertice na lista, e w é a qnt 
-de vertices que tem o nó
-direcionado indica se a inserção é direcionada ou nao, para nao
-direcionada, deve receber valor 0*/
-void insereArcoNoGrafo(Grafo g, int v, int w, char direcionado);
+// As funções de busca agora recebem um stream para imprimir os resultados
+void buscaEmLarguraGrafo(Grafo *g, Vertice inicio, FILE* stream);
+void buscaEmProfundidadeGrafo(Grafo *g, Vertice inicio, FILE* stream);
 
-void dfs(Grafo g, int verticeInicial);
 
-void destruirGrafo(Grafo g);
+/* Funções Específicas do Trabalho */
 
-void encontrarTodosCaminhos(Grafo g, int verticeInicial);
+bool temCicloGrafo(Grafo *g);
+void encontraTodosOsCaminhosGrafo(Grafo *g, Vertice inicio, FILE* stream);
 
-char grafoConexo(Grafo g);
-
-Grafo gerarGrafoAleatorio(int numVertices, float grau_conectividade, char direcionado);
-
-void imprimeGrafo(Grafo g);
-#endif
+#endif // GRAFO_H
